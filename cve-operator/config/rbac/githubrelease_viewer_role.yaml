@@ -1,0 +1,23 @@
+# permissions for end users to view githubreleases.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: cve-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: githubrelease-viewer-role
+rules:
+- apiGroups:
+  - su24.csye7125.t12.io
+  resources:
+  - githubreleases
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - su24.csye7125.t12.io
+  resources:
+  - githubreleases/status
+  verbs:
+  - get

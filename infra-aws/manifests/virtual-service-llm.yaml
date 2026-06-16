@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: llm-virtual-service
+  namespace: prometheus-grafana
+spec:
+  hosts: # Or your specific domain
+    - llm.shyammylai.me
+  gateways:
+    # - istio-system/grafana-gateway
+    - prometheus-grafana/grafana-gateway
+  http:
+    - name: "llm-model"
+      match:
+        - uri:
+            prefix: "/"
+      route:
+        - destination:
+            host: webapp-llm.webapp-llm.svc.cluster.local
+            port:
+              number: 80

@@ -1,0 +1,9 @@
+flask
+langchain
+langchain_groq
+pinecone-client
+langchain-pinecone
+huggingface-hub
+langchain-community
+langchain-huggingface
+streamlit

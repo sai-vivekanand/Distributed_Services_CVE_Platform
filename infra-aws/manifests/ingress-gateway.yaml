@@ -1,0 +1,38 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: grafana-gateway
+  # namespace: istio-system
+  namespace: prometheus-grafana
+  # annotations:
+  #   external-dns.alpha.kubernetes.io/hostname: shyammylai.me
+spec:
+  selector:
+    istio: gateway
+    # app: app=istio-gateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "grafanav1.shyammylai.me"
+        - "llm.shyammylai.me"
+    - port:
+        number: 443
+        name: https-grafana
+        protocol: HTTPS
+      hosts:
+        - "grafanav1.shyammylai.me"
+      tls:
+        mode: SIMPLE
+        credentialName: grafana-cert-tls
+    - port:
+        number: 443
+        name: https-llm
+        protocol: HTTPS
+      hosts:
+        - "llm.shyammylai.me"
+      tls:
+        mode: SIMPLE
+        credentialName: llm-cert-tls

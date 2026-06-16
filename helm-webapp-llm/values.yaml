@@ -1,0 +1,150 @@
+# Default values for webapp-llm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 2
+
+image:
+  repository: bala699/webapp-llm
+  pullPolicy: Always
+  tag: "1.2.0"
+
+imagePullSecrets:
+  - name: docker-secret
+
+nameOverride: "webapp-llm"
+fullnameOverride: "webapp-llm"
+namespace: "webapp-llm"
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: "webapp-llm-sa"
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations:
+    {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: 1000m
+    memory: 512Mi
+  requests:
+    cpu: 500m
+    memory: 256Mi
+
+livenessProbe:
+  httpGet:
+    port: 80
+    path: /healthz
+  initialDelaySeconds: 5
+  periodSeconds: 15
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+# Pod Disruption Budget settings
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# Additional volumes on the output Deployment definition.
+volumes: []
+# - name: foo
+#   secret:
+#     secretName: mysecret
+#     optional: false
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts: []
+# - name: foo
+#   mountPath: "/etc/foo"
+#   readOnly: true
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          topologyKey: topology.kubernetes.io/zone
+          labelSelector:
+            matchLabels:
+              app: webapp-llm
+
+env:
+  - name: PINECONE_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: apikey-secret
+        key: PINECONE_API_KEY
+  - name: HFACE_API_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: apikey-secret
+        key: HFACE_API_TOKEN
+  - name: PINECONE_INDEX_NAME
+    value: "csye7125-project"
+  - name: PINECONE_NAMESPACE
+    value: "default"
+  - name: OLLAMA_URL
+    value: "http://ollam-release-ollama.ollama.svc.cluster.local:11434"
+  - name: MODEL_NAME
+    value: "llama3.1:8b"

@@ -1,0 +1,14 @@
+apiVersion: su24.csye7125.t12.io/v1
+kind: GithubReleaseMonitor
+metadata:
+  labels:
+    app.kubernetes.io/name: cve-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: githubreleasemonitor
+  namespace: cve-operator
+  annotations: 
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "1"
+spec:
+  url: {{ .Values.githubReleaseMonitor.url }}
+  monitorFrom: {{ .Values.githubReleaseMonitor.monitorFrom }}

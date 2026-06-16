@@ -1,0 +1,6 @@
+metrics-server:
+  image:
+    repository: bala699/metrics-server
+    tag: v0.7.1
+  imagePullSecrets:
+    - name: dockerhub-secret

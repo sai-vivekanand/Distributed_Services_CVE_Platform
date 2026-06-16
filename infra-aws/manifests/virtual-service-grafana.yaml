@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: grafana-virtual-service
+  namespace: prometheus-grafana
+spec:
+  hosts: # Or your specific domain
+    - grafanav1.shyammylai.me
+  gateways:
+    # - istio-system/grafana-gateway
+    - prometheus-grafana/grafana-gateway
+  http:
+    - name: "grafana"
+      match:
+        - uri:
+            prefix: "/"
+      route:
+        - destination:
+            host: grafana-prometheus.prometheus-grafana.svc.cluster.local
+            port:
+              number: 80
+  # tls:
+  #   - match:
+  #       - port: 443
+  #         sniHosts:
+  #           - shyammylai.me
+  #     route:
+  #       - destination:
+  #           host: grafana-prometheus.prometheus-grafana.svc.cluster.local
+  #           port:
+  #             number: 80

@@ -1,0 +1,25 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: grafana-letsencrypt-prod
+  # namespace: prometheus-grafana
+  namespace: istio-system
+spec:
+  acme:
+    # server: https://acme-staging-v02.api.letsencrypt.org/directory
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: ubalasubramanian03@gmail.com
+    privateKeySecretRef:
+      name: grafana-letsencrypt-prod
+    solvers:
+      - selector:
+          dnsZones:
+            - "grafanav1.shyammylai.me"
+        dns01:
+          route53:
+            region: us-east-1
+            role: arn:aws:iam::851725214337:role/eks_route53_role
+            auth:
+              kubernetes:
+                serviceAccountRef:
+                  name: cert-manager-sa

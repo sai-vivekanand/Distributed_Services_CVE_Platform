@@ -1,0 +1,5 @@
+meshConfig: 
+  defaultConfig: 
+    holdApplicationUntilProxyStarts: true
+  
+  

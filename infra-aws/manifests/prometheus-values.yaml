@@ -1,0 +1,75 @@
+prometheus: 
+  prometheusSpec: 
+    additionalScrapeConfigs: 
+      - job_name: 'postgres'
+        scrape_interval: 70s
+        metrics_path: /metrics
+        scrape_timeout: 60s
+        static_configs: 
+          - targets: 
+              - 'cve-webapp-db-postgresql-metrics.namespace3.svc.cluster.local:9187'
+      - job_name: "kafka"
+        scrape_interval: 70s
+        metrics_path: /metrics
+        scrape_timeout: 60s
+        static_configs:
+          - targets:
+              - 'kafka-jmx-metrics.namespace2.svc.cluster.local:5556'
+      # - job_name: 'istiod'
+      #   kubernetes_sd_configs:
+      #   - role: endpoints
+      #     namespaces:
+      #       names:
+      #       - istio-system
+      #   relabel_configs:
+      #   - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+      #     action: keep
+      #     regex: istiod;http-monitoring
+      # - job_name: 'envoy-stats'
+      #   metrics_path: /stats/prometheus
+      #   kubernetes_sd_configs:
+      #   - role: pod
+      #   relabel_configs:
+      #   - source_labels: [__meta_kubernetes_pod_container_port_name]
+      #     action: keep
+      #     regex: '.*-envoy-prom'
+
+
+
+grafana: 
+  adminPassword: "base64encodedpassword"
+  dashboardProviders:
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+          - name: "kafka"
+            orgId: 1
+            folder: "kafka"
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/kafka
+          - name: "postgres"
+            orgId: 1
+            folder: "postgres"
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/postgres
+
+  dashboards:
+    kafka:
+      kafka-overview:
+        gnetId: 12483
+        revision: 1
+        datasource: Prometheus
+    postgres:
+      postgres-overview:
+        gnetId: 14114
+        revision: 1
+        datasource: Prometheus
+
+commonLabels:
+  pg-network-policy: "true"

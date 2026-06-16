@@ -1,0 +1,9 @@
+apiVersion: su24.csye7125.t12.io/v1
+kind: GithubRelease
+metadata:
+  labels:
+    app.kubernetes.io/name: cve-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: githubrelease-sample
+spec:
+  # TODO(user): Add fields here

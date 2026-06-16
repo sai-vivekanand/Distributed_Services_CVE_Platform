@@ -1,0 +1,10 @@
+serviceAccount:
+  name: cert-manager-sa
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::851725214337:role/eks_route53_role
+securityContext:
+  fsGroup: 1001
+
+crds: 
+  enabled: true 
+  keep: false

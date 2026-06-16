@@ -1,0 +1,4 @@
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::851725214337:role/eks_route53_role
+  name: "external-dns-sa"

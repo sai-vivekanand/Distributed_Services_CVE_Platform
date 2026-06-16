@@ -1,0 +1,89 @@
+fullnameOverride: "cve-webapp-db"
+service:
+  type: "LoadBalancer"
+
+persistence:
+  storageClass: "ebs-sc"
+  size: "4Gi"
+
+postgresql:
+  username: "cve_user"
+  password: "base64encodedpassword"
+  database: "cve"
+  repmgrUsername: "repmgr"
+  repmgrPassword: "base64encodedpassword"
+
+  podLabels:
+    networkLabel: "db"
+    sidecar.istio.io/inject: "false"
+  networkPolicy:
+    enabled: true
+    allowExternal: false
+    extraIngress:
+      - from:
+          - podSelector:
+              matchLabels:
+                app: deployment-consumer # label for kafka-consumer pod
+          - namespaceSelector:
+              matchLabels:
+                namespace: namespace3
+      - from:
+          - podSelector:
+              matchLabels:
+                pg-network-policy: "true"
+          - namespaceSelector: {}
+  resources:
+    requests:
+      cpu: "300m"
+      memory: "512Mi"
+      ephemeral-storage: "50Mi"
+    limits:
+      cpu: "500m"
+      memory: "1024Mi"
+      ephemeral-storage: "2Gi"
+  # sidecars:
+  #   - name: logforwarder
+  #     image: busybox
+  #     command: ["/bin/sh"]
+  #     args: ["-c", "tail -n+1 -F /opt/bitnami/postgresql/data/pg_log/*.json"]
+  #     volumeMounts:
+  #       - name: postgresql-data
+  #         mountPath: /opt/bitnami/postgresql/data
+pgpool:
+  adminUsername: "pgpool"
+  adminPassword: "base64encodedpassword"
+  podLabels:
+    networkLabel: "db"
+    sidecar.istio.io/inject: "false"
+  networkPolicy:
+    enabled: true
+    allowExternal: false
+    extraIngress:
+      - from:
+          - podSelector:
+              matchLabels:
+                app: deployment-consumer # label for kafka-consumer pod
+          - namespaceSelector:
+              matchLabels:
+                namespace: namespace3
+      - from:
+          - podSelector:
+              matchLabels:
+                pg-network-policy: "true"
+          - namespaceSelector: {}
+  resources:
+    requests:
+      cpu: "300m"
+      memory: "512Mi"
+      ephemeral-storage: "50Mi"
+    limits:
+      cpu: "500m"
+      memory: "1024Mi"
+      ephemeral-storage: "2Gi"
+
+metrics: 
+  enabled: true
+  image:
+    repository: prometheuscommunity/postgres-exporter
+    tag: "master"
+    pullPolicy: IfNotPresent

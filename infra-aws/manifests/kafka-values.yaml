@@ -1,0 +1,39 @@
+provisioning:
+  enabled: true
+  topics:
+    - name: cve
+      partitions: 3
+      replicationFactor: 3
+  podAnnotations:
+    proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
+  postScript: |
+    trap "curl --max-time 2 -s -f -XPOST http://127.0.0.1:15020/quitquitquit" EXIT
+    while ! curl -s -f http://127.0.0.1:15020/healthz/ready; do sleep 1; done
+    echo "Ready!"
+
+controller:
+  podAnnotations:
+    proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
+  initContainerResources:
+    limits:
+      cpu: "500m"
+      memory: "1024Mi"
+    requests:
+      cpu: "200m"
+      memory: "512Mi"
+  resources:
+    limits:
+      cpu: "500m"
+      memory: "2048Mi"
+    requests:
+      cpu: "200m"
+      memory: "1024Mi"
+
+
+broker: 
+  podAnnotations:
+    proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
+
+metrics:
+  jmx:
+    enabled: true
