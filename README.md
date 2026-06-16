@@ -1,4 +1,7 @@
-# Cloud_Adv
+# Distributed Microservices Integrated with LLM
+
+<img width="4880" height="3851" alt="image" src="https://github.com/user-attachments/assets/7c01dfd7-1284-46c9-b838-e22f378b4733" />
+
 
 Cloud_Adv is a multi-component cloud platform repository that combines AWS infrastructure provisioning, Kubernetes operators, Helm charts, and an LLM-powered web application.
 
